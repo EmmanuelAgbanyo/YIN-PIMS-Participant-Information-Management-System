@@ -1,9 +1,8 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import type { usePIMSData } from '../hooks/usePIMSData';
 import { Button } from './ui/Button';
 import { Modal } from './ui/Modal';
-import type { Participant, UserRole, UUID, Club, Gender } from '../types';
+import type { Participant, UserRole, UUID, Club, Event, Participation } from '../types';
 import { GENDERS, REGIONS, INSTITUTIONS } from '../constants';
 import { useToast } from '../hooks/useToast';
 import { Input } from './ui/Input';
@@ -22,6 +21,8 @@ type ParticipantsViewProps = Omit<ReturnType<typeof usePIMSData>, 'deletePartici
     currentUserRole: UserRole,
     updateParticipantMembershipCardTimestamp: (id: UUID) => void;
     addMultipleParticipants: (participantsData: Omit<Participant, 'id' | 'createdAt' | 'membershipId' | 'engagementScore' | 'lastMembershipCardGeneratedAt' | 'photoUrl'>[]) => Promise<{ created: number }>;
+    events: Event[];
+    participations: Participation[];
 };
 
 const initialParticipantState: Omit<Participant, 'id' | 'createdAt' | 'membershipId'> = {
@@ -32,6 +33,7 @@ const initialParticipantState: Omit<Participant, 'id' | 'createdAt' | 'membershi
   contact: '',
   membershipStatus: true,
   certificateIssued: false,
+  isContestant: false,
   notes: '',
   ghanaCardNumber: '',
 };
@@ -113,6 +115,7 @@ const ParticipantForm: React.FC<{
       <FormGroup className="flex items-center gap-4">
           <Checkbox name="membershipStatus" label="Active Member" checked={formData.membershipStatus} onChange={handleChange} />
           <Checkbox name="certificateIssued" label="Certificate Issued" checked={formData.certificateIssued} onChange={handleChange} />
+          <Checkbox name="isContestant" label="Contestant" checked={formData.isContestant || false} onChange={handleChange} />
       </FormGroup>
       
        {!initialData && (
@@ -142,7 +145,7 @@ const ParticipantForm: React.FC<{
   );
 };
 
-export const ParticipantsView: React.FC<ParticipantsViewProps> = ({ participants, addParticipant, updateParticipant, deleteParticipant, deleteMultipleParticipants, currentUserRole, updateParticipantMembershipCardTimestamp, clubs, addMultipleParticipants }) => {
+export const ParticipantsView: React.FC<ParticipantsViewProps> = ({ participants, events, participations, addParticipant, updateParticipant, deleteParticipant, deleteMultipleParticipants, currentUserRole, updateParticipantMembershipCardTimestamp, clubs, addMultipleParticipants }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingParticipant, setEditingParticipant] = useState<Participant | null>(null);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
@@ -151,6 +154,7 @@ export const ParticipantsView: React.FC<ParticipantsViewProps> = ({ participants
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [participantToDelete, setParticipantToDelete] = useState<Participant | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedEventId, setSelectedEventId] = useState('all');
   const [selectedIds, setSelectedIds] = useState<Set<UUID>>(new Set());
   const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
   const [cardParticipant, setCardParticipant] = useState<Participant | null>(null);
@@ -159,15 +163,34 @@ export const ParticipantsView: React.FC<ParticipantsViewProps> = ({ participants
   const canManage = useMemo(() => ['Super Admin', 'Admin'].includes(currentUserRole), [currentUserRole]);
 
   const filteredParticipants = useMemo(() => {
-    return participants.filter(p =>
-      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.institution.toLowerCase().includes(searchTerm.toLowerCase())
-    ).sort((a, b) => a.name.localeCompare(b.name));
-  }, [participants, searchTerm]);
+    let filtered = participants;
+
+    // Apply event filter if an event is selected
+    if (selectedEventId !== 'all') {
+      const attendeeIds = new Set(
+        participations
+          .filter(p => p.eventId === selectedEventId)
+          .map(p => p.participantId)
+      );
+      filtered = filtered.filter(p => attendeeIds.has(p.id));
+    }
+
+    // Apply search term filter
+    if (searchTerm) {
+      const lowercasedFilter = searchTerm.toLowerCase();
+      filtered = filtered.filter(p =>
+        p.name.toLowerCase().includes(lowercasedFilter) ||
+        p.institution.toLowerCase().includes(lowercasedFilter)
+      );
+    }
+    
+    // Sort the final result
+    return filtered.sort((a, b) => a.name.localeCompare(b.name));
+  }, [participants, searchTerm, selectedEventId, participations]);
 
   useEffect(() => {
     setSelectedIds(new Set());
-  }, [searchTerm]);
+  }, [searchTerm, selectedEventId]);
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
@@ -272,13 +295,24 @@ export const ParticipantsView: React.FC<ParticipantsViewProps> = ({ participants
           <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
             <h2 className="text-xl font-semibold">Participants ({filteredParticipants.length})</h2>
             <div className="flex items-center gap-2 flex-wrap justify-end">
-                <input type="text" placeholder="Search by name or institution..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="block w-full sm:w-64 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600" />
+                <input type="text" placeholder="Search..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="block w-full sm:w-48 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600" />
+                <select
+                  value={selectedEventId}
+                  onChange={e => setSelectedEventId(e.target.value)}
+                  className="block w-full sm:w-48 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600"
+                  aria-label="Filter by event"
+                >
+                  <option value="all">All Events</option>
+                  {events.sort((a, b) => b.date.getTime() - a.date.getTime()).map(e => (
+                    <option key={e.id} value={e.id}>{e.title}</option>
+                  ))}
+                </select>
                 {canManage && selectedIds.size > 0 && (
                     <Button variant="danger" onClick={handleBulkDeleteRequest}>Delete Selected ({selectedIds.size})</Button>
                 )}
                 <Button variant="ghost" onClick={() => setIsExportModalOpen(true)}><DownloadIcon />Export</Button>
                 {canManage && <Button variant="ghost" onClick={() => setIsImportModalOpen(true)}><UploadIcon/>Import</Button>}
-                {canManage && <Button onClick={handleAdd}>Add Participant</Button>}
+                {canManage && <Button onClick={handleAdd}>Add</Button>}
             </div>
           </div>
           <div className="overflow-x-auto flex-1">

@@ -33,6 +33,7 @@ const QuickAddParticipantForm: React.FC<{
     contact: '',
     institution: '',
     ghanaCardNumber: '',
+    isContestant: false,
   });
   const [joinClub, setJoinClub] = useState(false);
   const [selectedClubId, setSelectedClubId] = useState<UUID>('');
@@ -63,7 +64,7 @@ const QuickAddParticipantForm: React.FC<{
     }, joinClub ? selectedClubId : undefined);
     
     // Reset form
-    setFormData({ name: '', contact: '', institution: '', ghanaCardNumber: '' });
+    setFormData({ name: '', contact: '', institution: '', ghanaCardNumber: '', isContestant: false });
     setJoinClub(false);
     setSelectedClubId('');
   };
@@ -87,20 +88,30 @@ const QuickAddParticipantForm: React.FC<{
       </FormGroup>
 
        <div className="mt-4 p-4 border rounded-md dark:border-gray-700">
-          <FormGroup>
+          <div className="space-y-3">
+            <Checkbox 
+                label="Mark as Contestant"
+                name="isContestant"
+                checked={formData.isContestant}
+                onChange={e => setFormData(f => ({...f, isContestant: e.target.checked}))}
+            />
+             <div>
               <Checkbox label="Enroll in YIN Club" name="joinClub" checked={joinClub} onChange={(e) => setJoinClub(e.target.checked)} />
-          </FormGroup>
-          {joinClub && (
-              <FormGroup>
-                  <Select label="Club" value={selectedClubId} onChange={(e) => setSelectedClubId(e.target.value)} disabled={availableClubs.length === 0}>
-                      {availableClubs.length > 0 ? (
-                        availableClubs.map(c => <option key={c.id} value={c.id}>{c.name}</option>)
-                      ) : (
-                        <option>No clubs for this institution</option>
-                      )}
-                  </Select>
-              </FormGroup>
-          )}
+              {joinClub && (
+                <div className="pl-6 pt-2">
+                  <FormGroup>
+                      <Select label="Club" value={selectedClubId} onChange={(e) => setSelectedClubId(e.target.value)} disabled={availableClubs.length === 0}>
+                          {availableClubs.length > 0 ? (
+                            availableClubs.map(c => <option key={c.id} value={c.id}>{c.name}</option>)
+                          ) : (
+                            <option>No clubs for this institution</option>
+                          )}
+                      </Select>
+                  </FormGroup>
+                </div>
+              )}
+            </div>
+          </div>
       </div>
 
       <Button type="submit" className="w-full !mt-6">Create & Register</Button>

@@ -22,6 +22,7 @@ const NewMemberForm: React.FC<{
         contact: '',
         membershipStatus: true,
         certificateIssued: false,
+        isContestant: false,
         notes: '',
         ghanaCardNumber: '',
     });
@@ -45,6 +46,9 @@ const NewMemberForm: React.FC<{
             <FormGroup><Input type="text" label="Ghana Card (Optional)" name="ghanaCardNumber" value={formData.ghanaCardNumber || ''} onChange={handleChange} /></FormGroup>
             <FormGroup className="md:col-span-2"><Input label="Institution" name="institution" value={formData.institution} disabled /></FormGroup>
             <FormGroup><Select label="Region" name="region" value={formData.region} onChange={handleChange}>{REGIONS.map(r => <option key={r} value={r}>{r}</option>)}</Select></FormGroup>
+            <FormGroup className="md:col-span-2">
+                <Checkbox name="isContestant" label="Is a Contestant" checked={formData.isContestant} onChange={handleChange} />
+            </FormGroup>
             <FormGroup className="md:col-span-2"><Textarea label="Notes" name="notes" value={formData.notes} onChange={handleChange} rows={2} /></FormGroup>
             <div className="md:col-span-2 flex justify-end">
                 <Button type="submit">Create & Add Member</Button>

@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import type { Participant } from '../types';
 import { Modal } from './ui/Modal';
@@ -20,6 +21,7 @@ const ALL_COLUMNS = {
   institution: { label: 'Institution', default: true },
   membershipStatus: { label: 'Membership Status', default: true },
   engagementScore: { label: 'Engagement Score', default: true },
+  isContestant: { label: 'Is Contestant', default: false },
   ghanaCardNumber: { label: 'Ghana Card', default: false },
   gender: { label: 'Gender', default: false },
   region: { label: 'Region', default: false },

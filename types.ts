@@ -36,6 +36,7 @@ export interface Participant {
   contact: string;
   membershipStatus: boolean;
   certificateIssued: boolean;
+  isContestant?: boolean;
   notes: string;
   createdAt: Date;
   membershipId: string;

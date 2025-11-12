@@ -123,6 +123,7 @@ export const ImportVolunteersModal: React.FC<ImportVolunteersModalProps> = ({ is
             Gender: 'Female', // Optional
             Region: 'Greater Accra', // Optional
             'Ghana Card': 'GHA-123456789-0', // Optional
+            Contestant: 'NO', // Optional: YES or NO
         }];
         exportToCsv('YIN_Volunteer_Import_Template.csv', templateData);
     };
@@ -142,6 +143,9 @@ export const ImportVolunteersModal: React.FC<ImportVolunteersModalProps> = ({ is
             try {
                 const startDate = row.data.StartDate ? new Date(row.data.StartDate) : new Date();
                 if (isNaN(startDate.getTime())) throw new Error('Invalid start date');
+                
+                const contestantValue = row.data.Contestant?.trim().toLowerCase();
+                const isContestant = contestantValue === 'yes';
 
                 if (row.status === 'New Participant') {
                     const newParticipant = await addParticipant({
@@ -153,6 +157,7 @@ export const ImportVolunteersModal: React.FC<ImportVolunteersModalProps> = ({ is
                         ghanaCardNumber: row.data['Ghana Card'] || '',
                         membershipStatus: true,
                         certificateIssued: false,
+                        isContestant: isContestant,
                         notes: 'Imported via volunteer CSV upload.',
                     });
                     if(newParticipant) {

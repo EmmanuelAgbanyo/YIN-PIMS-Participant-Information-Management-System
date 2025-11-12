@@ -102,6 +102,7 @@ export const ImportMembersModal: React.FC<ImportMembersModalProps> = ({ isOpen, 
             Gender: 'Male',
             Region: 'Greater Accra',
             'Ghana Card': 'GHA-123456789-0',
+            Contestant: 'NO',
         }];
         exportToCsv('YIN_Club_Import_Template.csv', templateData);
     };
@@ -118,6 +119,8 @@ export const ImportMembersModal: React.FC<ImportMembersModalProps> = ({ isOpen, 
             }
 
             if (row.status === 'New Participant') {
+                const contestantValue = row.data.Contestant?.trim().toLowerCase();
+                const isContestant = contestantValue === 'yes';
                 const newParticipant = await addParticipant({
                     name: row.data.Name,
                     contact: row.data.Contact,
@@ -125,6 +128,7 @@ export const ImportMembersModal: React.FC<ImportMembersModalProps> = ({ isOpen, 
                     region: (Object.values(Region).includes(row.data.Region) ? row.data.Region : Region.GreaterAccra),
                     institution: club.institution,
                     ghanaCardNumber: row.data['Ghana Card'] || '',
+                    isContestant: isContestant,
                     membershipStatus: true,
                     certificateIssued: false,
                     notes: 'Imported via club CSV upload.',

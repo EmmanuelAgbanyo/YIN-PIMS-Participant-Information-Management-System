@@ -103,6 +103,7 @@ export const ImportParticipantsModal: React.FC<ImportParticipantsModalProps> = (
             CONTACT: '595016141',
             INSTITUTION: 'UG',
             MEMBERS: 'YES', // Can be YES, NO, or N/A
+            CONTESTANT: 'NO', // Can be YES or NO
             GENDER: 'Female', // Optional: Male, Female, Other
             REGION: 'Greater Accra', // Optional
             'GHANA CARD': 'GHA-123456789-0', // Optional
@@ -118,12 +119,16 @@ export const ImportParticipantsModal: React.FC<ImportParticipantsModalProps> = (
                 const data = row.data;
                 const membersValue = data.MEMBERS?.trim().toLowerCase() || data.Members?.trim().toLowerCase();
                 const membershipStatus = membersValue === 'yes';
+
+                const contestantValue = data.CONTESTANT?.trim().toLowerCase() || data.Contestant?.trim().toLowerCase();
+                const isContestant = contestantValue === 'yes';
                 
                 return {
                     name: data.NAMES || data.Name,
                     contact: data.CONTACT || data.Contact,
                     institution: data.INSTITUTION || data.Institution || 'N/A',
                     membershipStatus: membershipStatus,
+                    isContestant: isContestant,
                     gender: (Object.values(Gender).includes(data.GENDER || data.Gender) ? (data.GENDER || data.Gender) : Gender.Other),
                     region: (Object.values(Region).includes(data.REGION || data.Region) ? (data.REGION || data.Region) : Region.GreaterAccra),
                     ghanaCardNumber: data['GHANA CARD'] || '',
