@@ -33,6 +33,7 @@ const initialParticipantState: Omit<Participant, 'id' | 'createdAt' | 'membershi
   membershipStatus: true,
   certificateIssued: false,
   notes: '',
+  ghanaCardNumber: '',
 };
 
 const ParticipantForm: React.FC<{
@@ -102,6 +103,9 @@ const ParticipantForm: React.FC<{
         <Select label="Region" name="region" value={formData.region} onChange={handleChange}>
           {REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
         </Select>
+      </FormGroup>
+      <FormGroup className="md:col-span-2">
+        <Input type="text" label="Ghana Card Number (Optional)" name="ghanaCardNumber" value={formData.ghanaCardNumber || ''} onChange={handleChange} />
       </FormGroup>
       <FormGroup className="md:col-span-2">
         <Textarea label="Notes" name="notes" value={formData.notes} onChange={handleChange} rows={3} />

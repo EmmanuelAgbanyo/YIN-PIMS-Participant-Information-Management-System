@@ -45,6 +45,7 @@ export const ParticipantDetailPanel: React.FC<ParticipantDetailPanelProps> = ({ 
           <div className="space-y-4">
             <DetailItem label="Contact" value={participant.contact} />
             <DetailItem label="Institution" value={participant.institution} />
+            {participant.ghanaCardNumber && <DetailItem label="Ghana Card" value={participant.ghanaCardNumber} />}
             <DetailItem label="Region" value={participant.region} />
             <DetailItem label="Gender" value={participant.gender} />
             <DetailItem label="Membership Status">

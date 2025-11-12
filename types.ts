@@ -39,6 +39,7 @@ export interface Participant {
   notes: string;
   createdAt: Date;
   membershipId: string;
+  ghanaCardNumber?: string;
   engagementScore?: number;
   lastMembershipCardGeneratedAt?: Date;
   photoUrl?: string; // For membership card

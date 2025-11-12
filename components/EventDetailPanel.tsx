@@ -32,6 +32,7 @@ const QuickAddParticipantForm: React.FC<{
     name: '',
     contact: '',
     institution: '',
+    ghanaCardNumber: '',
   });
   const [joinClub, setJoinClub] = useState(false);
   const [selectedClubId, setSelectedClubId] = useState<UUID>('');
@@ -62,7 +63,7 @@ const QuickAddParticipantForm: React.FC<{
     }, joinClub ? selectedClubId : undefined);
     
     // Reset form
-    setFormData({ name: '', contact: '', institution: '' });
+    setFormData({ name: '', contact: '', institution: '', ghanaCardNumber: '' });
     setJoinClub(false);
     setSelectedClubId('');
   };
@@ -74,6 +75,9 @@ const QuickAddParticipantForm: React.FC<{
       </FormGroup>
       <FormGroup>
         <Input type="text" label="Contact Info" value={formData.contact} onChange={e => setFormData(f => ({...f, contact: e.target.value}))} required />
+      </FormGroup>
+      <FormGroup>
+        <Input type="text" label="Ghana Card (Optional)" value={formData.ghanaCardNumber} onChange={e => setFormData(f => ({...f, ghanaCardNumber: e.target.value}))} />
       </FormGroup>
       <FormGroup>
         <Input list="institutions" label="Institution" value={formData.institution} onChange={e => setFormData(f => ({...f, institution: e.target.value}))} required />

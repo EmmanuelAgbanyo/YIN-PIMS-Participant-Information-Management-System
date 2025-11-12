@@ -105,6 +105,7 @@ export const ImportParticipantsModal: React.FC<ImportParticipantsModalProps> = (
             MEMBERS: 'YES', // Can be YES, NO, or N/A
             GENDER: 'Female', // Optional: Male, Female, Other
             REGION: 'Greater Accra', // Optional
+            'GHANA CARD': 'GHA-123456789-0', // Optional
             NOTES: 'Optional notes here', // Optional
         }];
         exportToCsv('YIN_Participant_Import_Template.csv', templateData);
@@ -125,6 +126,7 @@ export const ImportParticipantsModal: React.FC<ImportParticipantsModalProps> = (
                     membershipStatus: membershipStatus,
                     gender: (Object.values(Gender).includes(data.GENDER || data.Gender) ? (data.GENDER || data.Gender) : Gender.Other),
                     region: (Object.values(Region).includes(data.REGION || data.Region) ? (data.REGION || data.Region) : Region.GreaterAccra),
+                    ghanaCardNumber: data['GHANA CARD'] || '',
                     notes: data.NOTES || data.Notes || 'Imported via CSV.',
                     certificateIssued: false,
                 };

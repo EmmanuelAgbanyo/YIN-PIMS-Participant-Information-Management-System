@@ -122,6 +122,7 @@ export const ImportVolunteersModal: React.FC<ImportVolunteersModalProps> = ({ is
             StartDate: '2024-08-01', // YYYY-MM-DD format
             Gender: 'Female', // Optional
             Region: 'Greater Accra', // Optional
+            'Ghana Card': 'GHA-123456789-0', // Optional
         }];
         exportToCsv('YIN_Volunteer_Import_Template.csv', templateData);
     };
@@ -149,6 +150,7 @@ export const ImportVolunteersModal: React.FC<ImportVolunteersModalProps> = ({ is
                         institution: row.data.Institution || 'N/A',
                         gender: (Object.values(Gender).includes(row.data.Gender) ? row.data.Gender : Gender.Other),
                         region: (Object.values(Region).includes(row.data.Region) ? row.data.Region : Region.GreaterAccra),
+                        ghanaCardNumber: row.data['Ghana Card'] || '',
                         membershipStatus: true,
                         certificateIssued: false,
                         notes: 'Imported via volunteer CSV upload.',

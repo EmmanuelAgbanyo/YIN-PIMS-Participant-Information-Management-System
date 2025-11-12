@@ -23,6 +23,7 @@ const NewMemberForm: React.FC<{
         membershipStatus: true,
         certificateIssued: false,
         notes: '',
+        ghanaCardNumber: '',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -41,6 +42,7 @@ const NewMemberForm: React.FC<{
             <FormGroup className="md:col-span-2"><Input type="text" label="Full Name" name="name" value={formData.name} onChange={handleChange} required /></FormGroup>
             <FormGroup><Select label="Gender" name="gender" value={formData.gender} onChange={handleChange}>{GENDERS.map(g => <option key={g} value={g}>{g}</option>)}</Select></FormGroup>
             <FormGroup><Input type="text" label="Contact (Phone/Email)" name="contact" value={formData.contact} onChange={handleChange} required /></FormGroup>
+            <FormGroup><Input type="text" label="Ghana Card (Optional)" name="ghanaCardNumber" value={formData.ghanaCardNumber || ''} onChange={handleChange} /></FormGroup>
             <FormGroup className="md:col-span-2"><Input label="Institution" name="institution" value={formData.institution} disabled /></FormGroup>
             <FormGroup><Select label="Region" name="region" value={formData.region} onChange={handleChange}>{REGIONS.map(r => <option key={r} value={r}>{r}</option>)}</Select></FormGroup>
             <FormGroup className="md:col-span-2"><Textarea label="Notes" name="notes" value={formData.notes} onChange={handleChange} rows={2} /></FormGroup>

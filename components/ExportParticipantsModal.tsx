@@ -20,6 +20,7 @@ const ALL_COLUMNS = {
   institution: { label: 'Institution', default: true },
   membershipStatus: { label: 'Membership Status', default: true },
   engagementScore: { label: 'Engagement Score', default: true },
+  ghanaCardNumber: { label: 'Ghana Card', default: false },
   gender: { label: 'Gender', default: false },
   region: { label: 'Region', default: false },
   createdAt: { label: 'Date Joined', default: false },

@@ -101,6 +101,7 @@ export const ImportMembersModal: React.FC<ImportMembersModalProps> = ({ isOpen, 
             Contact: 'john.d@example.com',
             Gender: 'Male',
             Region: 'Greater Accra',
+            'Ghana Card': 'GHA-123456789-0',
         }];
         exportToCsv('YIN_Club_Import_Template.csv', templateData);
     };
@@ -123,6 +124,7 @@ export const ImportMembersModal: React.FC<ImportMembersModalProps> = ({ isOpen, 
                     gender: (Object.values(Gender).includes(row.data.Gender) ? row.data.Gender : Gender.Other),
                     region: (Object.values(Region).includes(row.data.Region) ? row.data.Region : Region.GreaterAccra),
                     institution: club.institution,
+                    ghanaCardNumber: row.data['Ghana Card'] || '',
                     membershipStatus: true,
                     certificateIssued: false,
                     notes: 'Imported via club CSV upload.',
